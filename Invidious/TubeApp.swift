@@ -6,7 +6,7 @@ func getApiUrl() -> URL {
     guard let string = Bundle.main.infoDictionary?["INVIDIOUS_ORIGIN"] as? String else {
         preconditionFailure("INVIDIOUS_ORIGIN is not present")
     }
-    guard let url = URL(string: "https://" + string) else  {
+    guard let url = URL(string: "https://" + string) else {
         preconditionFailure("INVIDIOUS_ORIGIN is not a valid URL: \(string)")
     }
     return url
@@ -15,7 +15,7 @@ func getApiUrl() -> URL {
 @main
 struct TubeApp: App {
     static var client = APIClient(apiUrl: getApiUrl())
-    var playerState: OpenVideoPlayerAction
+    @Bindable var playerState: OpenVideoPlayerAction
     var queue: VideoQueue
 
     init() {
@@ -23,21 +23,34 @@ struct TubeApp: App {
         playerState = OpenVideoPlayerAction(queue: queue)
     }
 
+    var playerView: some View {
+        NavigationStack {
+            VideoView(model: VideoViewModel())
+                .background(.windowBackground)
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
-            Group {
-                if self.playerState.isPlayerOpen {
-                    NavigationStack {
-                        VideoView(model: VideoViewModel())
-                            .background(.windowBackground)
-                    }
-                } else {
-                    RootView()
+            RootView()
+            #if !os(macOS)
+                .fullScreenCover(isPresented: $playerState.isPlayerOpen) {
+                    playerState.isPlayerOpen = false
+                } content: {
+                    playerView
                 }
-            }
-            .environment(playerState)
-            .environment(queue)
-            .modelContainer(for: [FollowedChannel.self])
+            #endif
+                .environment(playerState)
+                .environment(queue)
+                .modelContainer(for: [FollowedChannel.self])
+        }
+        WindowGroup(id: "video-player", for: String.self) { _ in
+            playerView
+                .environment(playerState)
+                .environment(queue)
+                .modelContainer(for: [FollowedChannel.self])
+        } defaultValue: {
+            "video-player"
         }
     }
 }

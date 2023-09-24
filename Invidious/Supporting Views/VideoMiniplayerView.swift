@@ -3,6 +3,7 @@ import SwiftUI
 struct VideoMiniplayerView: View {
     @Environment(OpenVideoPlayerAction.self) var openPlayer
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.openWindow) var openWindow
     var queue: VideoQueue
 
     var body: some View {
@@ -42,16 +43,22 @@ struct VideoMiniplayerView: View {
         .labelStyle(.iconOnly)
         .buttonStyle(.plain)
         #if os(macOS)
-        .overlay(Rectangle().frame(width: nil, height: 1, alignment: .top).foregroundColor(colorScheme == .light ? .init(white: 0.5, opacity: 0.25) : .init(white: 0.0, opacity: 0.5)), alignment: .top)
+            .overlay(Rectangle().frame(width: nil, height: 1, alignment: .top).foregroundColor(colorScheme == .light ? .init(white: 0.5, opacity: 0.25) : .init(white: 0.0, opacity: 0.5)), alignment: .top)
         #else
-        .overlay(Rectangle().frame(width: nil, height: 1, alignment: .top).foregroundStyle(.separator).opacity(0.25), alignment: .top)
+            .overlay(Rectangle().frame(width: nil, height: 1, alignment: .top).foregroundStyle(.separator).opacity(0.25), alignment: .top)
         #endif
-        .tint(.primary)
-        .onTapGesture {
-            Task {
-                await openPlayer(id: nil)
-            }
-        }
+            .tint(.primary)
+            .onTapGesture {
+                Task {
+                    await openPlayer(id: nil, openWindow: openWindow)
+                }
+            }.contextMenu(ContextMenu(menuItems: {
+                Button {
+                    queue.clear()
+                } label: {
+                    Text("Clear Queue")
+                }
+            }))
     }
 }
 

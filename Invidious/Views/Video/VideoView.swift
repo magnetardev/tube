@@ -39,6 +39,7 @@ struct VideoView: View {
                 queue.playerQueue.pause()
             }
             .toolbar {
+                #if !os(macOS)
                 ToolbarItem(placement: .navigation) {
                     Button {
                         playerState.close()
@@ -46,6 +47,7 @@ struct VideoView: View {
                         Label("Close", systemImage: "chevron.down")
                     }
                 }
+                #endif
                 ToolbarItem {
                     Button {
                         showingQueue = true

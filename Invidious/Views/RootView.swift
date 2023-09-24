@@ -18,6 +18,8 @@ struct RootView: View {
     @State var path = NavigationPath()
     @State var query: String = ""
     @Environment(VideoQueue.self) var queue
+    @Environment(OpenVideoPlayerAction.self) private var openPlayer
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         NavigationSplitView {
@@ -47,6 +49,29 @@ struct RootView: View {
                         PlaylistView(model: PlaylistViewModel(playlistId: id))
                     }
                 }
+            }
+        }.onOpenURL { url in
+            guard
+                let queryItem = URLComponents(url: url, resolvingAgainstBaseURL: true)?.queryItems?.first,
+                let value = queryItem.value
+            else {
+                return
+            }
+
+            var newPath = NavigationPath()
+            switch queryItem.name {
+            case "playlist":
+                newPath.append(NavigationDestination.playlist(value))
+                path = newPath
+            case "channel":
+                newPath.append(NavigationDestination.channel(value))
+                path = newPath
+            case "video":
+                Task {
+                    await openPlayer(id: value, openWindow: openWindow)
+                }
+            default:
+                return
             }
         }
         .ignoresSafeArea()

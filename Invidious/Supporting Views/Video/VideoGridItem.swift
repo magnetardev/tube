@@ -11,6 +11,7 @@ struct VideoGridItem: View {
     var thumbnails: [ThumbnailObject]
     @Environment(OpenVideoPlayerAction.self) var openPlayer
     @Environment(VideoQueue.self) var queue
+    @Environment(\.openWindow) private var openWindow
     
     private var formattedDuration: String {
         (Date() ..< Date().advanced(by: TimeInterval(duration))).formatted(.timeDuration)
@@ -19,7 +20,7 @@ struct VideoGridItem: View {
     var body: some View {
         Button {
             Task {
-                await openPlayer(id: id)
+                await openPlayer(id: id, openWindow: openWindow)
             }
         } label: {
             VStack(alignment: .leading) {
