@@ -32,12 +32,6 @@ struct VideoView: View {
         #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
-            .onAppear {
-                queue.playerQueue.play()
-            }
-            .onDisappear {
-                queue.playerQueue.pause()
-            }
             .toolbar {
                 #if !os(macOS)
                 ToolbarItem(placement: .navigation) {

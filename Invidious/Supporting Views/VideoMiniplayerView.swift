@@ -1,3 +1,4 @@
+import AVKit
 import SwiftUI
 
 struct VideoMiniplayerView: View {
@@ -8,17 +9,16 @@ struct VideoMiniplayerView: View {
 
     var body: some View {
         HStack {
-            if let video = queue.current {
-                ThumbnailView(width: 78, height: 44, thumbnails: video.videoThumbnails)
-                VStack(alignment: .leading) {
-                    Text(video.title).lineLimit(1)
-                    Text(video.author).lineLimit(1).foregroundStyle(.secondary)
-                }
+            if !openPlayer.isPlayerOpen {
+                VideoPlayer(player: queue.playerQueue)
+                    .frame(width: 78, height: 44)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 4.0, style: .continuous)).shadow(color: .secondary.opacity(0.25), radius: 1, x: 0, y: 0)
             } else {
                 RoundedRectangle(cornerRadius: 4.0, style: .continuous).fill(.foreground)
                     .frame(width: 78, height: 44)
-                Text("Nothing Playing").lineLimit(1)
             }
+            Text(queue.current?.title ?? "Nothing Playing").lineLimit(1).font(.callout).fontWeight(.medium)
             Spacer()
             Button {
                 if queue.playerQueue.timeControlStatus == .paused {
