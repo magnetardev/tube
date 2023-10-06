@@ -28,8 +28,8 @@ struct PlaylistItemView: View {
                     VideoThumbnailTag("\(videoCount.formatted()) videos")
                 }
                 VStack(alignment: .leading, spacing: 2.0) {
-                    Text(title).lineLimit(1)
-                    Text(author).lineLimit(1).foregroundColor(.secondary)
+                    Text(title).lineLimit(1).font(.callout)
+                    Text(author).lineLimit(1).foregroundStyle(.secondary).font(.callout)
                 }
             }
         }.buttonStyle(.plain)

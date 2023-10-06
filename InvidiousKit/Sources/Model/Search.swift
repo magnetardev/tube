@@ -48,6 +48,6 @@ public extension APIClient {
             URLQueryItem(name: "q", value: query),
             URLQueryItem(name: "page", value: page.description)
         ])
-        return try decoder.decode([Search.Result].self, from: data)
+        return try Self.decoder.decode([Search.Result].self, from: data)
     }
 }

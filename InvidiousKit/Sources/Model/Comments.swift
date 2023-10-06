@@ -69,6 +69,6 @@ public extension APIClient {
         }
 
         let (data, _) = try await request(for: "/api/v1/comments/\(idPath)", with: queryItems)
-        return try decoder.decode(CommentsResponse.self, from: data)
+        return try Self.decoder.decode(CommentsResponse.self, from: data)
     }
 }

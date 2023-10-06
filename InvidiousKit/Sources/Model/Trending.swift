@@ -13,6 +13,6 @@ public extension APIClient {
             for: "/api/v1/trending",
             with: [URLQueryItem(name: "type", value: category.rawValue)]
         )
-        return try decoder.decode([VideoObject].self, from: data)
+        return try Self.decoder.decode([VideoObject].self, from: data)
     }
 }

@@ -52,13 +52,13 @@ struct VideoMiniplayerView: View {
                 Task {
                     await openPlayer(id: nil, openWindow: openWindow)
                 }
-            }.contextMenu(ContextMenu(menuItems: {
+            }.contextMenu(menuItems: {
                 Button {
                     queue.clear()
                 } label: {
                     Text("Clear Queue")
                 }
-            }))
+            })
     }
 }
 

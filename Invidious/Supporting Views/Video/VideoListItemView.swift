@@ -8,7 +8,7 @@ struct VideoListItem: View {
 
     var body: some View {
         HStack {
-            ThumbnailView(width: 78, height: 44, thumbnails: thumbnails)
+            ThumbnailView(width: 78, height: 44, radius: 4.0, thumbnails: thumbnails)
             VStack(alignment: .leading) {
                 Text(title).lineLimit(1)
                 Text(author).lineLimit(1).foregroundStyle(.secondary)

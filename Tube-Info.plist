@@ -15,8 +15,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>INVIDIOUS_ORIGIN</key>
-	<string>$(INVIDIOUS_ORIGIN)</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

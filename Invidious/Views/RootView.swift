@@ -11,6 +11,7 @@ enum SidebarSelection: Hashable {
 enum NavigationDestination: Hashable {
     case channel(String)
     case playlist(String)
+    case settings
 }
 
 struct RootView: View {
@@ -22,35 +23,32 @@ struct RootView: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        NavigationSplitView {
-            SidebarView(selection: $selection)
-        } detail: {
-            NavigationStack(path: $path) {
-                Group {
-                    switch selection {
-                    case .feed:
-                        FeedView()
-                    case .trending:
-                        TrendingView(model: TrendingViewModel())
-                    case .search:
-                        SearchResultsView()
-                    case .channel(let id):
-                        ChannelView(model: ChannelViewModel(channelId: id))
-                    case .none:
-                        ScrollView {
-                            Text("No Selection")
-                        }
-                    }
-                }.safeAreaPadding(.bottom, 76).navigationDestination(for: NavigationDestination.self) { destination in
+        NavigationStack(path: $path) {
+            FeedView()
+            #if os(iOS)
+                .safeAreaPadding(.bottom, 76)
+            #endif
+                .navigationDestination(for: NavigationDestination.self) { destination in
                     switch destination {
                     case .channel(let id):
                         ChannelView(model: ChannelViewModel(channelId: id))
+                        #if os(iOS)
+                            .safeAreaPadding(.bottom, 76)
+                        #endif
                     case .playlist(let id):
                         PlaylistView(model: PlaylistViewModel(playlistId: id))
+                        #if os(iOS)
+                            .safeAreaPadding(.bottom, 76)
+                        #endif
+                    case .settings:
+                        SettingsView()
+                        #if os(iOS)
+                            .safeAreaPadding(.bottom, 76)
+                        #endif
                     }
                 }
-            }
-        }.onOpenURL { url in
+        }
+        .onOpenURL { url in
             guard
                 let queryItem = URLComponents(url: url, resolvingAgainstBaseURL: true)?.queryItems?.first,
                 let value = queryItem.value
@@ -74,7 +72,6 @@ struct RootView: View {
                 return
             }
         }
-        .ignoresSafeArea()
         .safeAreaInset(edge: .bottom, alignment: .center, spacing: 0) {
             VideoMiniplayerView(queue: queue)
                 .frame(height: 76)

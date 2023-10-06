@@ -158,6 +158,6 @@ public extension APIClient {
             throw APIError.urlCreation
         }
         let (data, _) = try await request(for: "/api/v1/videos/\(idPath)")
-        return try decoder.decode(Video.self, from: data)
+        return try Self.decoder.decode(Video.self, from: data)
     }
 }

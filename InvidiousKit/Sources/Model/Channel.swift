@@ -59,7 +59,7 @@ public extension APIClient {
             throw APIError.urlCreation
         }
         let (data, _) = try await request(for: "/api/v1/channels/\(idPath)")
-        return try decoder.decode(Channel.self, from: data)
+        return try Self.decoder.decode(Channel.self, from: data)
     }
     
     func videos(for channelId: String, continuation: String?) async throws -> Channel.VideosResponse {
@@ -67,7 +67,7 @@ public extension APIClient {
             throw APIError.urlCreation
         }
         let (data, _) = try await request(for: "/api/v1/channels/\(idPath)/videos")
-        return try decoder.decode(Channel.VideosResponse.self, from: data)
+        return try Self.decoder.decode(Channel.VideosResponse.self, from: data)
     }
     
     func shorts(for channelId: String, continuation: String?) async throws -> Channel.VideosResponse {
@@ -75,7 +75,7 @@ public extension APIClient {
             throw APIError.urlCreation
         }
         let (data, _) = try await request(for: "/api/v1/channels/\(idPath)/shorts")
-        return try decoder.decode(Channel.VideosResponse.self, from: data)
+        return try Self.decoder.decode(Channel.VideosResponse.self, from: data)
     }
     
     func streams(for channelId: String, continuation: String?) async throws -> Channel.VideosResponse {
@@ -84,7 +84,7 @@ public extension APIClient {
         }
         let (data, _) = try await request(for: "/api/v1/channels/\(idPath)/streams")
         do {
-            return try decoder.decode(Channel.VideosResponse.self, from: data)
+            return try Self.decoder.decode(Channel.VideosResponse.self, from: data)
         } catch {
             throw error
         }
@@ -95,6 +95,6 @@ public extension APIClient {
             throw APIError.urlCreation
         }
         let (data, _) = try await request(for: "/api/v1/channels/\(idPath)/playlists")
-        return try decoder.decode(Channel.PlaylistResponse.self, from: data)
+        return try Self.decoder.decode(Channel.PlaylistResponse.self, from: data)
     }
 }

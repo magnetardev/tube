@@ -28,18 +28,41 @@ class CommentsViewModel {
 struct CommentsView: View {
     var model: CommentsViewModel
 
+    func getMarkdownContent(comment: CommentsResponse.Comment) -> AttributedString? {
+        return try? AttributedString(markdown: comment.content)
+    }
+
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 24) {
                 ForEach(model.comments, id: \.commentId) { comment in
                     VStack(alignment: .leading, spacing: 4.0) {
-                        Text(comment.author).fontWeight(.medium)
-                        Text(comment.content)
+                        HStack {
+                            ImageView(width: 32, height: 32, images: comment.authorThumbnails)
+                            Text(comment.author).fontWeight(.medium)
+                            Spacer()
+                            Text(comment.publishedText)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        Text(comment.content).font(.subheadline).padding(.vertical, 8.0)
                         HStack {
                             Image(systemName: "hand.thumbsup")
                             Text(comment.likeCount.formatted())
                             Spacer()
-                        }.padding(.top, 4.0)
+                            if comment.isPinned {
+                                Image(systemName: "pin.fill")
+                            }
+                            if comment.creatorHeart != nil {
+                                Image(systemName: "heart.fill").foregroundStyle(.red)
+                            }
+                        }
+                        .padding(.bottom)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        if comment != model.comments.last {
+                            Divider()
+                        }
                     }
                 }
             }.padding()

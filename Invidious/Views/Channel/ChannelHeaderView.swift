@@ -1,5 +1,5 @@
-import SwiftUI
 import InvidiousKit
+import SwiftUI
 
 struct ChannelHeaderView: View {
     var channel: Channel
@@ -10,17 +10,16 @@ struct ChannelHeaderView: View {
             HStack {
                 ImageView(width: 64, height: 64, images: channel.authorThumbnails)
                 VStack(alignment: .leading) {
-                    HStack {
-                        Text(channel.author)
+                    Group {
                         if channel.authorVerified {
-                            Image(systemName: "checkmark.circle")
-                                .frame(width: 16, height: 16)
+                            Text(channel.author) + Text(" ") + Text(Image(systemName: "checkmark.seal.fill")).foregroundStyle(.tint)
+                        } else {
+                            Text(channel.author)
                         }
-                    }
-                    Text(channel.subCount.formatted())
+                    }.fontWeight(.medium)
+                    Text("\(channel.subCount.formatted()) Subscribers").foregroundStyle(.secondary)
                 }
                 Spacer()
-                FollowButton(channelId: channel.authorId, channelName: channel.author)
             }
 
             GeometryReader { proxy in
@@ -38,5 +37,10 @@ struct ChannelHeaderView: View {
                 }
             }
         }.padding()
+            .toolbar {
+                ToolbarItem {
+                    FollowButton(channelId: channel.authorId, channelName: channel.author).labelStyle(.iconOnly)
+                }
+            }
     }
 }

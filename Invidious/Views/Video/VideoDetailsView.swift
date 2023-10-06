@@ -9,15 +9,16 @@ struct VideoDetailsView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(video.title)
+            Text(video.title).fontWeight(.medium)
             HStack {
                 ImageView(width: 44, height: 44, images: video.authorThumbnails)
                 VStack(alignment: .leading) {
                     Text(video.author)
-                    Text(video.subCountText).foregroundStyle(.secondary)
+                    Text("\(video.subCountText) Subscribers").foregroundStyle(.secondary)
                 }
                 Spacer()
                 FollowButton(channelId: video.authorId, channelName: video.author)
+                    .labelStyle(.iconOnly)
             }
             Picker(selection: $selectedTab) {
                 Text("Info").tag(VideoViewModel.SelectedTab.info)
@@ -34,6 +35,7 @@ struct VideoDetailsView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         Text(video.description)
+                            .font(.subheadline)
                     }.padding()
                 }
             case .comments:
@@ -48,7 +50,7 @@ struct VideoDetailsView: View {
                     } label: {
                         VideoListItem(title: video.title, author: video.author, thumbnails: video.videoThumbnails)
                     }.buttonStyle(.plain)
-                        .contextMenu(ContextMenu(menuItems: {
+                        .contextMenu(menuItems: {
                             Button {
                                 Task {
                                     do {
@@ -60,7 +62,7 @@ struct VideoDetailsView: View {
                             } label: {
                                 Text("Add to Queue")
                             }
-                        }))
+                        })
                 }.listStyle(.inset)
             }
         }

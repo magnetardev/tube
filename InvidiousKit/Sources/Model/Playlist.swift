@@ -6,6 +6,6 @@ public extension APIClient {
             throw APIError.urlCreation
         }
         let (data, _) = try await request(for: "/api/v1/playlists/\(idPath)")
-        return try decoder.decode(PlaylistObject.self, from: data)
+        return try Self.decoder.decode(PlaylistObject.self, from: data)
     }
 }

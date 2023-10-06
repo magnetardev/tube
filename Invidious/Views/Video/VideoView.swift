@@ -23,24 +23,18 @@ struct VideoView: View {
     @Environment(OpenVideoPlayerAction.self) private var playerState
 
     var body: some View {
-        VStack {
-            VideoPlayerView(player: queue.playerQueue)
-        }
-        .background(Color.black)
-        .preferredColorScheme(.dark)
-        .navigationTitle(queue.current?.title ?? "Video")
-        #if !os(macOS)
-            .navigationBarTitleDisplayMode(.inline)
-        #endif
+        VideoPlayerView(player: queue.playerQueue)
+            .background(.black, ignoresSafeAreaEdges: .all)
+            .navigationTitle(queue.current?.title ?? "Video")
             .toolbar {
                 #if !os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    Button {
-                        playerState.close()
-                    } label: {
-                        Label("Close", systemImage: "chevron.down")
+                    ToolbarItem(placement: .navigation) {
+                        Button {
+                            playerState.close()
+                        } label: {
+                            Label("Close", systemImage: "chevron.down")
+                        }
                     }
-                }
                 #endif
                 ToolbarItem {
                     Button {
@@ -60,6 +54,10 @@ struct VideoView: View {
                     }
                 }
             }
+        #if !os(macOS)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .navigationBarTitleDisplayMode(.inline)
+        #endif
             .inspector(isPresented: $model.showingInfo) {
                 if let video = queue.current {
                     VideoDetailsView(video: video)

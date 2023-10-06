@@ -2,6 +2,7 @@ import AVFoundation
 import AVKit
 import Foundation
 import InvidiousKit
+import MediaPlayer
 import Observation
 
 enum VideoQueueError: LocalizedError {
@@ -14,12 +15,12 @@ final class VideoQueue: NSObject {
     private(set) var current: Video? = nil
     private(set) var playing: Bool = false
     private(set) var videos: [VideoItem] = []
-    
+
     struct VideoItem: Identifiable, Equatable {
         static func == (lhs: VideoQueue.VideoItem, rhs: VideoQueue.VideoItem) -> Bool {
             lhs.id == rhs.id
         }
-        
+
         let id = UUID()
         var player: AVPlayerItem
         var info: Video
@@ -28,6 +29,15 @@ final class VideoQueue: NSObject {
     override init() {
         self.playerQueue = AVQueuePlayer()
         super.init()
+        playerQueue.allowsExternalPlayback = true
+        #if os(iOS)
+        let session = AVAudioSession.sharedInstance()
+        do {
+            try session.setCategory(.playback, mode: .default, options: .defaultToSpeaker)
+        } catch {
+            print(error.localizedDescription)
+        }
+        #endif
         playerQueue.addObserver(
             self,
             forKeyPath: #keyPath(AVQueuePlayer.currentItem),
@@ -51,12 +61,19 @@ final class VideoQueue: NSObject {
             }
             if let newItem = change?[NSKeyValueChangeKey.newKey] as? AVPlayerItem {
                 current = videos.first { $0.player == newItem }?.info
+                let center = MPNowPlayingInfoCenter.default()
+                center.nowPlayingInfo = if let current {
+                    [
+                        MPMediaItemPropertyTitle: current.title,
+                        MPMediaItemPropertyArtist: current.author,
+                    ]
+                } else {
+                    nil
+                }
             }
-            break
         case "timeControlStatus":
             playing = playerQueue.timeControlStatus == .playing
-            break
-        default: break;
+        default: break
         }
     }
 
@@ -64,23 +81,23 @@ final class VideoQueue: NSObject {
         playerQueue.removeAllItems()
         videos.removeAll()
     }
-    
+
     func remove(video: VideoItem) {
         playerQueue.remove(video.player)
         guard let index = videos.firstIndex(of: video) else { return }
         videos.remove(at: index)
     }
-    
+
     func skip(to item: VideoItem) {
         guard playerQueue.currentItem != nil, videos.contains(item) else {
             return
         }
-        
+
         while let player = playerQueue.currentItem, player != item.player {
             playerQueue.advanceToNextItem()
         }
     }
-    
+
     func add(id: String) async throws {
         let video = try await TubeApp.client.video(for: id)
         try await MainActor.run {

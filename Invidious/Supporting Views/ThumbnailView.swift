@@ -4,6 +4,7 @@ import SwiftUI
 struct ThumbnailView: View {
     let width: CGFloat
     let height: CGFloat
+    let radius: CGFloat
     var thumbnails: [ThumbnailObject]
 
     var preferredThumbnail: ThumbnailObject? {
@@ -23,13 +24,15 @@ struct ThumbnailView: View {
                         image.resizable().scaledToFill()
                             .frame(maxWidth: width, maxHeight: height)
                     } placeholder: {}
+                        .frame(maxWidth: width, maxHeight: height)
+                        .clipped()
                 }
             }
-            .cornerRadius(width * 0.02)
+            .cornerRadius(radius)
             .clipped()
     }
 }
 
 #Preview {
-    ThumbnailView(width: 100, height: 56.25, thumbnails: [])
+    ThumbnailView(width: 100, height: 56.25, radius: 4.0, thumbnails: [])
 }

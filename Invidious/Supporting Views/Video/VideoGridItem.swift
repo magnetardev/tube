@@ -12,7 +12,7 @@ struct VideoGridItem: View {
     @Environment(OpenVideoPlayerAction.self) var openPlayer
     @Environment(VideoQueue.self) var queue
     @Environment(\.openWindow) private var openWindow
-    
+
     private var formattedDuration: String {
         (Date() ..< Date().advanced(by: TimeInterval(duration))).formatted(.timeDuration)
     }
@@ -25,16 +25,16 @@ struct VideoGridItem: View {
         } label: {
             VStack(alignment: .leading) {
                 ZStack {
-                    ThumbnailView(width: 360.0, height: 202.5, thumbnails: thumbnails)
+                    ThumbnailView(width: 360.0, height: 202.5, radius: 8.0, thumbnails: thumbnails)
                     VideoThumbnailTag(self.formattedDuration)
                 }
                 VStack(alignment: .leading, spacing: 2.0) {
-                    Text(title).lineLimit(1)
-                    Text(author).lineLimit(1).foregroundStyle(.secondary)
-                    Text(published).lineLimit(1).foregroundStyle(.secondary)
+                    Text(title).lineLimit(1).font(.callout)
+                    Text(author).lineLimit(1).foregroundStyle(.secondary).font(.callout)
+                    Text(published).lineLimit(1).foregroundStyle(.secondary).font(.callout)
                 }
             }
-        }.buttonStyle(.plain).contextMenu(ContextMenu(menuItems: {
+        }.buttonStyle(.plain).contextMenu(menuItems: {
             Button {
                 Task {
                     do {
@@ -51,6 +51,6 @@ struct VideoGridItem: View {
                     Text("View Channel")
                 }
             }
-        }))
+        })
     }
 }

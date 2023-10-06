@@ -2,7 +2,7 @@ import SwiftUI
 
 struct VideoQueueListView: View {
     @Environment(VideoQueue.self) var queue
-    
+
     var body: some View {
         List(queue.videos) { entry in
             Button {
