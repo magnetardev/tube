@@ -33,7 +33,7 @@ final class VideoQueue: NSObject {
         #if os(iOS)
         let session = AVAudioSession.sharedInstance()
         do {
-            try session.setCategory(.playback, mode: .default, options: .defaultToSpeaker)
+            try session.setCategory(.playback, mode: .default)
         } catch {
             print(error.localizedDescription)
         }

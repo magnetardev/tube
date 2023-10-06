@@ -1,6 +1,6 @@
-import SwiftUI
 import InvidiousKit
 import Observation
+import SwiftUI
 
 @Observable
 class PlaylistViewModel {
@@ -9,11 +9,11 @@ class PlaylistViewModel {
     var videos: [PlaylistObject.PlaylistVideo] = []
     var loading = true
     var error: Error?
-    
+
     init(playlistId: String) {
         self.playlistId = playlistId
     }
-    
+
     func load() async {
         loading = true
         do {
@@ -30,7 +30,7 @@ class PlaylistViewModel {
 
 struct PlaylistView: View {
     var model: PlaylistViewModel
-    
+
     var body: some View {
         ScrollView {
             ContentGridView {
@@ -38,7 +38,7 @@ struct PlaylistView: View {
                     VideoGridItem(
                         id: video.videoId,
                         title: video.title,
-                        author: video.author ?? "Unknown Channel", 
+                        author: video.author ?? "Unknown Channel",
                         authorId: nil,
                         duration: video.lengthSeconds,
                         published: "",
@@ -53,10 +53,22 @@ struct PlaylistView: View {
             await model.load()
         }.refreshable {
             await model.load()
+        }.toolbar {
+            if let url = URL(string: "https://youtube.com/playlist?list=\(model.playlistId)") {
+                ToolbarItem {
+                    ShareLink(item: url)
+                }
+            } else {
+                ToolbarItem {
+                    Button {} label: {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }.disabled(true)
+                }
+            }
         }
     }
 }
 
-//#Preview {
+// #Preview {
 //    PlaylistView()
-//}
+// }

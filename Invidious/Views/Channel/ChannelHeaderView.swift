@@ -37,10 +37,5 @@ struct ChannelHeaderView: View {
                 }
             }
         }.padding()
-            .toolbar {
-                ToolbarItem {
-                    FollowButton(channelId: channel.authorId, channelName: channel.author).labelStyle(.iconOnly)
-                }
-            }
     }
 }

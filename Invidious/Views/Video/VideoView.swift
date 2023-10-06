@@ -46,6 +46,19 @@ struct VideoView: View {
                             .frame(minWidth: 300, minHeight: 200)
                     }
                 }
+                
+                if let video = queue.current, let url = URL(string: "https://youtube.com/watch?v=\(video.videoId)") {
+                    ToolbarItem {
+                        ShareLink(video.title, item: url)
+                    }
+                } else {
+                    ToolbarItem {
+                        Button {} label: {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                        }.disabled(true)
+                    }
+                }
+                
                 ToolbarItem {
                     Button {
                         model.showingInfo.toggle()
@@ -55,6 +68,7 @@ struct VideoView: View {
                 }
             }
         #if !os(macOS)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .navigationBarTitleDisplayMode(.inline)
         #endif

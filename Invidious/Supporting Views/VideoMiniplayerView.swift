@@ -11,6 +11,7 @@ struct VideoMiniplayerView: View {
         HStack {
             if !openPlayer.isPlayerOpen {
                 VideoPlayer(player: queue.playerQueue)
+                    .allowsHitTesting(false)
                     .frame(width: 78, height: 44)
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 4.0, style: .continuous)).shadow(color: .secondary.opacity(0.25), radius: 1, x: 0, y: 0)

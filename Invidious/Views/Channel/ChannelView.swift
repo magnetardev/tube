@@ -34,6 +34,7 @@ class ChannelViewModel {
     }
     
     func load() async {
+        error = nil
         loading = true
         do {
             channel = try await TubeApp.client.channel(for: channelId)
@@ -66,6 +67,23 @@ struct ChannelView: View {
             await model.load()
         }.refreshable {
             await model.load()
+        }.toolbar {
+            if let url = URL(string: "https://youtube.com/channel/\(model.channelId)") {
+                ToolbarItem {
+                    ShareLink(item: url)
+                }
+            }
+            if let channel = model.channel {
+                ToolbarItem {
+                    FollowButton(channelId: model.channelId, channelName: channel.author)
+                }
+            } else {
+                ToolbarItem {
+                    Button {} label: {
+                        Label("Follow", systemImage: "heart")
+                    }.disabled(true)
+                }
+            }
         }
     }
 }
